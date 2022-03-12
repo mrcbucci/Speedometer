@@ -1,9 +1,9 @@
-// Schermo
+// LCD 20x4
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
-// Temperatura
+// Temperature
 #include <OneWire.h>
 #include <DallasTemperature.h>
 int tempPin = 5;
@@ -12,11 +12,11 @@ OneWire oneWire(tempPin);
 DallasTemperature temp(&oneWire);
 float tC;
 
-// VARIABILI
-// Menù
+// Var
+// Menu
 int menu = 0;
 
-// Cronometro
+// Stopwatch
 int crono = 0;
 float t = 0;
 int m = 0;
@@ -26,7 +26,7 @@ float Ls = 0;
 int Bm = 9;
 float Bs = 59;
 
-// Tasti
+// Botton
 const int button1Pin = 2;
 int button1State;
 int lastButton1State = LOW;
@@ -42,17 +42,17 @@ unsigned long debounceDelay = 500;
 
 
 void setup() {
-  // Tasti
+  // Botton
   pinMode(button1Pin, INPUT);
   pinMode(button2Pin, INPUT);
-  // Temperatura
+  // Temperature
   temp.begin();
   temp.setResolution(sensore1, 10);
 
   lcd.init();
   lcd.backlight();
   lcd.setCursor(5, 1);
-  lcd.print("Benvenuto!");
+  lcd.print("Welcome!");
   delay(2000);
   lcd.clear();
 }
@@ -60,10 +60,10 @@ void setup() {
 
 void loop() {
 
-  // Menù + Debounce software
+  // Menu + Debounce software
   if (digitalRead(button1Pin)) {
     if ((millis() - debounceTime) > debounceDelay) {
-      // Comando
+  // Command
       lcd.clear();
       menu++;
       if (menu >= 2) {
@@ -76,7 +76,7 @@ void loop() {
   switch (menu) {
 
     case 0:
-      //Temperatura
+      //Temperature
       temp.requestTemperatures();
       tC = temp.getTempCByIndex(0);
       lcd.setCursor(0, 1);
@@ -87,10 +87,10 @@ void loop() {
       break;
 
     case 1:
-      // Tasto avvio cronometro + Debounce software
+      // Stopwatch start button + Debounce software
       if (digitalRead(button2Pin)) {
         if ((millis() - debounceTime) > debounceDelay) {
-          // Comando
+          // Command
           crono = 1;
           t = millis();
           lcd.clear();
@@ -98,14 +98,14 @@ void loop() {
             Lm = m;
             Ls = s;
             m = 0;
-            // MIGLIOR TEMPO
+            // Best Lap
             if (Lm <= Bm) {
               Bm = Lm;
               if (Ls <= Bs) {
                 Bs = Ls;
               }
             }
-            // FINE MIGLIOR TEMPO
+            // END Best Lap
           }
           debounceTime = millis();
         }
